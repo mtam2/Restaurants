@@ -1,0 +1,65 @@
+<h1>Lunch!</h1>
+<div>
+<%= form_tag("/", method: "get", id: "get_restaurant_form") do %>
+    <%= label_tag(:username, "Username") %><br>
+    <%= text_field_tag(:username) %><br>
+    <%= submit_tag("Get Restaurant!") %>
+<% end %>
+</div>
+<div id='target_restaurant'>
+    <% # TODO: Move code block below into respective helper/JS files %>
+    <% # Username validation (Compares if username input is an existing username)%>
+    <% usernames = User.pluck(:username) %>
+    <% if !params[:username].nil? && !params[:username].empty? && usernames.include?(params[:username]) %>
+    <% # Create a Ruby array of presorted restaurants from a SQL query from main_helper %>
+    <% restaurant_list = get_restaurant_list(params[:username]) %>
+
+    <%= label_tag("Restaurant Name") %><br>
+    <p id="restaurant_name"></p><br>
+    <%= label_tag("Phone Number") %><br>
+    <p id="restaurant_phone"></p><br>
+    <%= label_tag("Address") %><br>
+    <p id="restaurant_address"></p><br>
+    <%= label_tag("Menu Link") %><br>
+    <p id="restaurant_menu"></p><br>
+    <%= label_tag("Last Visit Date")%><br>
+    <p id="restaurant_date"></p><br>
+    <%= label_tag("Average Rating") %><br>
+    <p id="restaurant_rating"></p><br>
+    <% # Outputs an error message to non-empty non-valid username input %>
+    <button id="next_restaurant" type="button">Get another restaurant!</button><br>
+    <% elsif !params[:username].nil? && !params[:username].empty? %>
+    <%= label_tag("Invalid Username") %><br>
+    <% end %>
+    
+</div>
+<script>
+    var button_click = 0;
+    var array = (<%= restaurant_list.to_json.html_safe %>);
+    document.getElementById("restaurant_name").innerHTML = array[button_click].restaurant_name;
+    document.getElementById("restaurant_phone").innerHTML = array[button_click].phone;
+    document.getElementById("restaurant_address").innerHTML = array[button_click].address;
+    document.getElementById("restaurant_menu").innerHTML = array[button_click].menu;
+    document.getElementById("restaurant_date").innerHTML = array[button_click].date;
+    document.getElementById("restaurant_rating").innerHTML = array[button_click].Average;
+    document.getElementById("next_restaurant").onclick = function() { updateRestaurant()};
+    if(array[button_click].date == undefined){
+        document.getElementById("restaurant_date").innerHTML = "You have not been here yet.";
+    }
+    function updateRestaurant(){
+        button_click++;
+        document.getElementById("restaurant_name").innerHTML = array[button_click].restaurant_name;
+        document.getElementById("restaurant_phone").innerHTML = array[button_click].phone;
+        document.getElementById("restaurant_address").innerHTML = array[button_click].address;
+        document.getElementById("restaurant_menu").innerHTML = array[button_click].menu;
+        document.getElementById("restaurant_date").innerHTML = array[button_click].date;
+        document.getElementById("restaurant_rating").innerHTML = array[button_click].Average;
+        if(array[button_click].date == undefined){
+        document.getElementById("restaurant_date").innerHTML = "You have not been here yet.";
+        }
+    }
+</script>
+</div>
+<h2><%= link_to "Want to Rate a Restaurant?", new_rating_path, id:"rate" %></h2>
+<h2><%= link_to "Want to Add a New Restaurant?", new_restaurant_path, id:"add" %></h2>
+<h2><%= link_to "New User?", new_user_path, id:"new_user" %></h2>

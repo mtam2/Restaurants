@@ -1,6 +1,13 @@
 source 'https://rubygems.org'
 
-
+# Autolinking the menu links
+gem 'rails_autolink'
+# Font Awesome for star icons
+gem 'font-awesome-sass'
+# Bootstrap for easier CSS formatting
+gem 'bootstrap-sass', '~> 3.3.6'
+# Faker for fake data
+gem 'faker', '1.4.2'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.5'
 # Use postgresql as the database for Active Record
