@@ -1,8 +1,7 @@
-<%= form_for(@rating) do |f| %>
+<%= form_for(@rating, :html => { :onsubmit => "return checkValues()"}) do |f| %>
   <% if @rating.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@rating.errors.count, "error") %> prohibited this rating from being saved:</h2>
-
       <ul>
       <% @rating.errors.full_messages.each do |message| %>
         <li><%= message %></li>
@@ -12,15 +11,15 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :user_id %><br>
+    <%= label_tag("User ID") %><br>
     <%= f.text_field :user_id %>
   </div>
   <div class="field">
-    <%= f.label :restaurant_id %><br>
+    <%= label_tag("Restaurant ID") %><br>
     <%= f.text_field :restaurant_id %>
   </div>
   <div class="field">
-    <%= f.label :rating %><br>
+    <%= label_tag("Rating (1-5)") %><br>
     <%= f.number_field :rating %>
   </div>
   <div class="field">
@@ -28,6 +27,32 @@
     <%= f.date_select :date %>
   </div>
   <div class="actions">
-    <%= f.submit %>
+    <input id="submit" name="commit" value="Create Rating" type="submit" onSubmit="return checkValues()">
   </div>
 <% end %>
+<% # Javascript level validation %>
+<h1 id="error"></h1>
+<script>
+  var max_user_id = <%= user_id_validation[0].max %>;
+  var max_restaurant_id = <%= restaurant_id_validation[0].max %>;
+  document.getElementById("submit").onclick = function() {checkValues()};
+  function checkValues(){
+    // checks if value is below max user ID
+    if(!(document.getElementById("rating_user_id").value >= 0) && !(document.getElementById("rating_user_id").value < max_user_id)){
+      document.getElementById("error").innerHTML = "Invalid input";
+      alert("Invalid input");
+      return false;
+    }
+    else if(!(document.getElementById("rating_restaurant_id").value >= 0) && !(document.getElementById("rating_restaurant_id").value < max_restaurant_id[0].max)){
+      document.getElementById("error").innerHTML = "Invalid input";
+      alert("Invalid input");
+      return false;
+    }
+    else if(!(document.getElementById("rating_rating").value >= 1) && !(document.getElementById("rating_rating").value <= 5)){
+      document.getElementById("error").innerHTML = "Invalid input";
+      alert("Invalid input");
+      return false;
+    }
+    return true;
+  }
+</script>

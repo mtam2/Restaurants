@@ -11,9 +11,14 @@
     <% # Username validation (Compares if username input is an existing username)%>
     <% usernames = User.pluck(:username) %>
     <% if !params[:username].nil? && !params[:username].empty? && usernames.include?(params[:username]) %>
+    <% user_id = get_user_id(params[:username])[0].id %>
     <% # Create a Ruby array of presorted restaurants from a SQL query from main_helper %>
     <% restaurant_list = get_restaurant_list(params[:username]) %>
 
+    <%= label_tag("Your User ID") %><br>
+    <p id="user_ID"></p><br>
+    <%= label_tag("Restaurant ID") %><br>
+    <p id="restaurant_ID"></p><br>
     <%= label_tag("Restaurant Name") %><br>
     <p id="restaurant_name"></p><br>
     <%= label_tag("Phone Number") %><br>
@@ -36,10 +41,12 @@
 <script>
     var button_click = 0;
     var array = (<%= restaurant_list.to_json.html_safe %>);
+    document.getElementById("user_ID").innerHTML = <%= user_id %>;
+    document.getElementById("restaurant_ID").innerHTML = array[button_click].restaurant_id;
     document.getElementById("restaurant_name").innerHTML = array[button_click].restaurant_name;
     document.getElementById("restaurant_phone").innerHTML = array[button_click].phone;
     document.getElementById("restaurant_address").innerHTML = array[button_click].address;
-    document.getElementById("restaurant_menu").innerHTML = array[button_click].menu;
+    document.getElementById("restaurant_menu").innerHTML = array[button_click].menu.autoLink();
     document.getElementById("restaurant_date").innerHTML = array[button_click].date;
     document.getElementById("restaurant_rating").innerHTML = array[button_click].Average;
     document.getElementById("next_restaurant").onclick = function() { updateRestaurant()};
@@ -48,10 +55,11 @@
     }
     function updateRestaurant(){
         button_click++;
+        document.getElementById("restaurant_ID").innerHTML = array[button_click].restaurant_id;
         document.getElementById("restaurant_name").innerHTML = array[button_click].restaurant_name;
         document.getElementById("restaurant_phone").innerHTML = array[button_click].phone;
         document.getElementById("restaurant_address").innerHTML = array[button_click].address;
-        document.getElementById("restaurant_menu").innerHTML = array[button_click].menu;
+        document.getElementById("restaurant_menu").innerHTML = array[button_click].menu.autoLink();
         document.getElementById("restaurant_date").innerHTML = array[button_click].date;
         document.getElementById("restaurant_rating").innerHTML = array[button_click].Average;
         if(array[button_click].date == undefined){
