@@ -1,4 +1,4 @@
-<%= form_for(@rating, :html => { :onsubmit => "return checkValues()"}) do |f| %>
+<%= form_for(@rating, :html => { :onsubmit => "return checkValues()", :name => "rating_form"}) do |f| %>
   <% if @rating.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@rating.errors.count, "error") %> prohibited this rating from being saved:</h2>
@@ -12,47 +12,32 @@
 
   <div class="field">
     <%= label_tag("User ID") %><br>
-    <%= f.text_field :user_id %>
+    <%= f.text_field :user_id, :pattern => "[0-9]{1,3}", :required => true %>
   </div>
   <div class="field">
     <%= label_tag("Restaurant ID") %><br>
-    <%= f.text_field :restaurant_id %>
+    <%= f.text_field :restaurant_id, :pattern => "[0-9]{1,3}", :required => true %>
   </div>
   <div class="field">
     <%= label_tag("Rating (1-5)") %><br>
-    <%= f.number_field :rating %>
+    <%= f.text_field :rating, :pattern => "^[1-5]$", :required => true %>
   </div>
   <div class="field">
     <label>Last Visit Date</label><br>
     <%= f.date_select :date %>
   </div>
   <div class="actions">
-    <input id="submit" name="commit" value="Create Rating" type="submit" onSubmit="return checkValues()">
-  </div>
+    <button id="submit" name="commit" value="Create Rating" type="submit">Create Rating</button>
+  </div><br>
+  <span class="error"></span>
 <% end %>
 <% # Javascript level validation %>
-<h1 id="error"></h1>
+<% # TODO: Implement proper validation using actual IDs instead of REGEX %>
 <script>
   var max_user_id = <%= user_id_validation[0].max %>;
   var max_restaurant_id = <%= restaurant_id_validation[0].max %>;
-  document.getElementById("submit").onclick = function() {checkValues()};
-  function checkValues(){
-    // checks if value is below max user ID
-    if(!(document.getElementById("rating_user_id").value >= 0) && !(document.getElementById("rating_user_id").value < max_user_id)){
-      document.getElementById("error").innerHTML = "Invalid input";
-      alert("Invalid input");
-      return false;
-    }
-    else if(!(document.getElementById("rating_restaurant_id").value >= 0) && !(document.getElementById("rating_restaurant_id").value < max_restaurant_id[0].max)){
-      document.getElementById("error").innerHTML = "Invalid input";
-      alert("Invalid input");
-      return false;
-    }
-    else if(!(document.getElementById("rating_rating").value >= 1) && !(document.getElementById("rating_rating").value <= 5)){
-      document.getElementById("error").innerHTML = "Invalid input";
-      alert("Invalid input");
-      return false;
-    }
-    return true;
-  }
+  var user_id = document.getElementById("rating_user_id");
+  var restaurant_id = document.getElementById("rating_restaurant_id");
+  // https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Forms/Data_form_validation
+  function checkValues(){};
 </script>
