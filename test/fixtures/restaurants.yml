@@ -1,12 +1,14 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
+  id: 1
   restaurant_name: R1
   phone: 123
   address: 456A
   menu: http://api.rubyonrails.org/
 
 two:
+  id: 2
   restaurant_name: R2
   phone: 789
   address: 101B
